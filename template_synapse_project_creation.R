@@ -1,37 +1,91 @@
-### Project Creation Template script
+library(reticulate)
+use_condaenv("r-reticulate", required = T)
+synapse <- import('synapseclient')
+syn <- synapse$Synapse()
+syn$login()
 
-library(synapser)
-library(glue)
-synLogin()
+# name project, and add wiki content; wiki markdown goes in between triple quotes
+projectName <- 'Defining the factors that dictate the pattern of glioma formation in NF1'
 
-############# Input project description ###########
-projectName <- "{write project name here}"
+content <- glue::glue("
+# {projectName}
+## Initiative and/or Funder Info
 
-# manually add in content using markdown syntax (may be helpful to use Synapse forms in the future)
-content <- "
-## This is my project
-## Subgroup: 
-Research subgroup
-##Principal Investigator: 
-John Doe
-##Technical Abstract
-"
-############# Create the project on Synapse (behind the scenes) #########
-project <- Project(projectName)
-project <- synStore(project)
-wiki <- Wiki(owner = project,
-             title = projectName,
-             markdown = content)
-wiki <- synStore(wiki)
-dataFolder1 <- Folder("Raw Data", parent = project)
-dataFolder1 <- synStore(dataFolder1)
-dataFolder2 <- Folder("Analysis", parent = project)
-dataFolder2 <- synStore(dataFolder2)
-dataFolder3 <- Folder("Milestone Reports", parent = project)
-dataFolder3 <- synStore(dataFolder3)
+### Principal Investigator: Nicole Brossier, MD, PhD
+### Project Lead / Data Coordinator: Nicole Brossier, MD, PhD
+### Institution: Washington University in St. Louis
 
-############# View the web version of the project created ######## 
+### Project Description: 
+Neurofibromatosis type 1 (NF1) is a cancer predisposition syndrome caused by a wide spectrum of germline mutations in the NF1 gene. Children with NF1 have a ~20% risk of developing low-grade brain tumors of the optic pathway (optic pathway glioma; OPG) or brainstem (brainstem glioma; BSG). However, it is currently unclear which children with NF1 will develop these brain tumors. Emerging human population-based evidence has raised the possibility that patient-specific risk factors, including infant birth weight and the specific germline NF1 mutation that each child is born with, may modulate the risk of glioma development. High-infant birth weight can be modeled in mice by maternal exposure to a high-fat high-sucrose (HFHS) diet. Based on my preliminary data demonstrating that both germline mutation and maternal HFHS diet increase proliferation and glial differentiation of specific neuroglial progenitor (NPC) populations, I now hypothesize that both disease-intrinsic factors (different germline NF1 gene mutations; Aim 1) and disease-extrinsic factors (maternal HFHS diet; Aim 2) act on spatially-defined populations of NPCs to modulate NF1-glioma penetrance. In this grant, I will determine whether specific germline Nf1 mutations affect the proliferation and differentiation of NPCs from different ventricular surfaces over the course of mouse brain development (Aim 1) and whether maternal HFHS diet exposure modifies these responses (Aim 2). Taken together, these experiments aim to determine whether germline NF1 gene mutations and maternal diet function as risk factors for NF1-glioma formation in different regions of the brain.
+")
 
-# Robert suggested:
-id <- project$properties$id
-browseURL(glue::glue("https://www.synapse.org/#!Synapse:{id}"))
+project <- synapse$Project(projectName)
+project <- syn$store(project)
+
+wiki <- synapse$Wiki(owner=project,
+            title=projectName,
+            markdown=content)
+
+wiki <- syn$store(wiki)
+
+# name and create folders
+data_folder1 = synapse$Folder('Analysis', parent=project)
+data_folder1 = syn$store(data_folder1)
+data_folder2 = synapse$Folder('Milestone Reports', parent=project)
+data_folder2 = syn$store(data_folder2)
+data_folder3 = synapse$Folder('Raw Data', parent=project)
+data_folder3 = syn$store(data_folder3)
+
+
+# set NF-OSI team permissions; currently sets to can edit & delete, want full admin
+NFsharing = syn$setPermissions(entity=project, 
+                               principalId=3378999, 
+                               accessType=list('DELETE', 'CHANGE_SETTINGS', 'MODERATE', 'CREATE', 'READ','DOWNLOAD', 'UPDATE', 'CHANGE_PERMISSIONS'))
+
+# add Project Files and Metadata fileview, add NF schema; currently doesn't add facets
+view = synapse$EntityViewSchema(name="Project Files and Metadata",
+                        columns=list(
+                          synapse$Column(name="assay", columnType="STRING", maximumSize="57"),
+                          synapse$Column(name="consortium", columnType="STRING", maximumSize="24"),
+                          synapse$Column(name="dataSubtype", columnType="STRING", maximumSize="13"),
+                          synapse$Column(name="dataType", columnType="STRING", maximumSize="30"),
+                          synapse$Column(name="diagnosis", columnType="STRING", maximumSize="39"),
+                          synapse$Column(name="tumorType", columnType="STRING", maximumSize="90"),
+                          synapse$Column(name="fileFormat", columnType="STRING", maximumSize="13"),
+                          synapse$Column(name="fundingAgency", columnType="STRING", maximumSize="12"),
+                          synapse$Column(name="individualID", columnType="STRING", maximumSize="213"),
+                          synapse$Column(name="nf1Genotype", columnType="STRING", maximumSize="8"),
+                          synapse$Column(name="nf2Genotype", columnType="STRING", maximumSize="7"),
+                          synapse$Column(name="species", columnType="STRING", maximumSize="15"),
+                          synapse$Column(name="resourceType", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="isCellLine", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="isMultiSpecimen", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="isMultiIndividual", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="studyId", columnType="ENTITYID"),
+                          synapse$Column(name="studyName", columnType="LARGETEXT"),
+                          synapse$Column(name="specimenID", columnType="STRING", maximumSize="300"),
+                          synapse$Column(name="sex", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="age", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="readPair", columnType="INTEGER"),
+                          synapse$Column(name="reportMilestone", columnType="INTEGER"),
+                          synapse$Column(name="accessType", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="accessTeam", columnType="USERID"),
+                          synapse$Column(name="cellType", columnType="STRING", maximumSize="300"),
+                          synapse$Column(name="modelOf", columnType="STRING", maximumSize="50"),
+                          synapse$Column(name="compoundName", columnType="STRING", maximumSize="156"),
+                          synapse$Column(name="experimentalCondition", columnType="STRING", maximumSize="58"),
+                          synapse$Column(name="modelSystemName", columnType="STRING", maximumSize="42"),
+                          synapse$Column(name="isXenograft", columnType="STRING", maximumSize="5"),
+                          synapse$Column(name="transplantationType", columnType="STRING", maximumSize="50")),
+                        parent=project,
+                        scopes=project,
+                        includeEntityTypes=list(synapse$EntityViewType$FILE),
+                        add_default_columns=TRUE)
+view = syn$store(view)
+
+# immediately takes you to Synapse project website; uncomment to activate
+seeProjectInBrowser = syn$onweb(project)
+
+
+#TODO: add snippet to add the project to the Portal Files view scope
+#TODO: add snippet to add the project to the Portal Studies table as a row
