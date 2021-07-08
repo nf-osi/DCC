@@ -5,18 +5,18 @@ syn <- synapse$Synapse()
 syn$login()
 
 # name project, and add wiki content; wiki markdown goes in between triple quotes
-projectName <- 'Defining the factors that dictate the pattern of glioma formation in NF1'
+projectName <- 'Insert Project Title Here'
 
 content <- glue::glue("
 # {projectName}
 ## Initiative and/or Funder Info
 
-### Principal Investigator: Nicole Brossier, MD, PhD
-### Project Lead / Data Coordinator: Nicole Brossier, MD, PhD
-### Institution: Washington University in St. Louis
+### Principal Investigator: Insert PI name here
+### Project Lead / Data Coordinator: Insert Data Coordinator name here
+### Institution: Insert Institution name here
 
 ### Project Description: 
-Neurofibromatosis type 1 (NF1) is a cancer predisposition syndrome caused by a wide spectrum of germline mutations in the NF1 gene. Children with NF1 have a ~20% risk of developing low-grade brain tumors of the optic pathway (optic pathway glioma; OPG) or brainstem (brainstem glioma; BSG). However, it is currently unclear which children with NF1 will develop these brain tumors. Emerging human population-based evidence has raised the possibility that patient-specific risk factors, including infant birth weight and the specific germline NF1 mutation that each child is born with, may modulate the risk of glioma development. High-infant birth weight can be modeled in mice by maternal exposure to a high-fat high-sucrose (HFHS) diet. Based on my preliminary data demonstrating that both germline mutation and maternal HFHS diet increase proliferation and glial differentiation of specific neuroglial progenitor (NPC) populations, I now hypothesize that both disease-intrinsic factors (different germline NF1 gene mutations; Aim 1) and disease-extrinsic factors (maternal HFHS diet; Aim 2) act on spatially-defined populations of NPCs to modulate NF1-glioma penetrance. In this grant, I will determine whether specific germline Nf1 mutations affect the proliferation and differentiation of NPCs from different ventricular surfaces over the course of mouse brain development (Aim 1) and whether maternal HFHS diet exposure modifies these responses (Aim 2). Taken together, these experiments aim to determine whether germline NF1 gene mutations and maternal diet function as risk factors for NF1-glioma formation in different regions of the brain.
+Insert Project Abstract here
 ")
 
 project <- synapse$Project(projectName)
