@@ -37,13 +37,22 @@ data_folder3 = synapse$Folder('Raw Data', parent=project)
 data_folder3 = syn$store(data_folder3)
 
 
-# set NF-OSI team permissions; currently sets to can edit & delete, want full admin
-NFsharing = syn$setPermissions(entity=project, 
+# set NF-OSI Sage Team permissions; currently sets to full admin
+NFsharing <- syn$setPermissions(entity=project, 
                                principalId=3378999, 
                                accessType=list('DELETE', 'CHANGE_SETTINGS', 'MODERATE', 'CREATE', 'READ','DOWNLOAD', 'UPDATE', 'CHANGE_PERMISSIONS'))
 
+# grant Funding partner team Admin permissions by uncommenting the line for the funder for this project
+#funder <- 3359657 ##CTF team
+#funder <- 3406072 ##GFF Admin team
+#funder <- 3331266 ##NTAP Admin team
+
+FunderSharing <- syn$setPermissions(entity=project, 
+                               principalId=funder, 
+                               accessType=list('DELETE', 'CHANGE_SETTINGS', 'MODERATE', 'CREATE', 'READ','DOWNLOAD', 'UPDATE', 'CHANGE_PERMISSIONS'))
+
 # add Project Files and Metadata fileview, add NF schema; currently doesn't add facets
-view = synapse$EntityViewSchema(name="Project Files and Metadata",
+view <- synapse$EntityViewSchema(name="Project Files and Metadata",
                         columns=list(
                           synapse$Column(name="assay", columnType="STRING", maximumSize="57"),
                           synapse$Column(name="consortium", columnType="STRING", maximumSize="24"),
@@ -81,10 +90,10 @@ view = synapse$EntityViewSchema(name="Project Files and Metadata",
                         scopes=project,
                         includeEntityTypes=list(synapse$EntityViewType$FILE),
                         add_default_columns=TRUE)
-view = syn$store(view)
+view <- syn$store(view)
 
-# immediately takes you to Synapse project website; uncomment to activate
-seeProjectInBrowser = syn$onweb(project)
+# takes you to Synapse project website; uncomment to activate
+# seeProjectInBrowser <- syn$onweb(project)
 
 
 #TODO: add snippet to add the project to the Portal Files view scope
