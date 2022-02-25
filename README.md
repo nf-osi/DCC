@@ -1,3 +1,3 @@
-# NF-OSI-DCC
+# PLEASE NOTE
 
-This repo consists of scripts that are helpful in our DCC efforts in the NF community
+This repo is archived. An updated version of this code is now available in `nfportalutils` R package (https://www.github.com/nf-osi/nfportalutils). 
